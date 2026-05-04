@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/dossiers")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ClientDossierController {
 
     private final ClientDossierService service;
