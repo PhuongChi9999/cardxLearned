@@ -1,9 +1,9 @@
 <h2>Liste des dossiers</h2>
 
-<p>Nombre de dossiers: {{ dossiers.length }}</p>
+<p>Nombre de dossiers: {{ dossiers().length }}</p>
 
-@for (d of dossiers; track d.id) {
+@for (d of dossiers(); track d.id) {
 <p>{{ d.clientName }} - {{ d.status }}</p>
 } @empty {
-<p>Aucun dossier trouvé</p>
+<p>Aucun dossier trouvé!</p>
 }
