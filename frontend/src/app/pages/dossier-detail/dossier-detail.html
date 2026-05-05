@@ -1,0 +1,27 @@
+<h2>Dossier detail</h2>
+
+@if (!dossier) {
+<p>Loading...</p>
+}
+
+@if (dossier) {
+<p><b>ID:</b> {{ dossier.id }}</p>
+<p><b>Nom:</b> {{ dossier.clientName }}</p>
+<p><b>Email:</b> {{ dossier.email }}</p>
+<p><b>Téléphone:</b> {{ dossier.phone }}</p>
+<p><b>Status:</b> {{ dossier.status }}</p>
+}
+
+<hr>
+
+<h3>Envoyer un document</h3>
+
+<input type="file" (change)="onFileSelected($event)" />
+
+<br><br>
+
+<button (click)="upload()">Envoyer un document</button>
+
+@if (message) {
+<p>{{ message }}</p>
+}

@@ -2,8 +2,30 @@
 
 <p>Nombre de dossiers: {{ dossiers().length }}</p>
 
-@for (d of dossiers(); track d.id) {
-<p>{{ d.clientName }} - {{ d.status }}</p>
-} @empty {
-<p>Aucun dossier trouvé!</p>
-}
+<table style="width:100%; margin-top:20px; border-collapse: collapse;">
+  <thead>
+  <tr style="background:#f1f5f9;">
+    <th style="padding:10px; text-align:left;">Nom</th>
+    <th style="padding:10px; text-align:left;">Status</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  @for (d of dossiers(); track d.id) {
+  <tr style="border-top:1px solid #e5e7eb;">
+    <td style="padding:10px;">
+      <a [routerLink]="['/dossiers', d.id]" style="color:#2563eb; text-decoration: none;">
+        {{ d.clientName }}
+      </a>
+    </td>
+    <td style="padding:10px;">
+      {{ d.status }}
+    </td>
+  </tr>
+  } @empty {
+  <tr>
+    <td colspan="2" style="padding:10px;">Aucun dossier trouvé</td>
+  </tr>
+  }
+  </tbody>
+</table>

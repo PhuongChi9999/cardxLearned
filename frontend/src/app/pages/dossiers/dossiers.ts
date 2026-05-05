@@ -1,9 +1,11 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dossiers',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './dossiers.html',
   styleUrl: './dossiers.scss'
 })
