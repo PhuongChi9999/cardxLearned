@@ -24,3 +24,5 @@ Object { status_url: "https://apyhub.com/services/provider/sharpapi/api/v1/hr/pa
 }
 
 Les données dans le champs "data" sont à afficher dans l'écran (message)
+- Documentation
+https://apyhub.com/utility/sharpapi-ai-resume-parser
