@@ -18,6 +18,7 @@ public class ExtractionResultDto {
                     Object.class
             );
         } catch (Exception e) {
+            e.printStackTrace();
             this.extractedData = null;
         }
     }

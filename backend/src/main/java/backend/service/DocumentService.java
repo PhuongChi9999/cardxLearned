@@ -87,8 +87,8 @@ public class DocumentService {
         Document document = documentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Document not found"));
 
-        String aiResponse = aiExtractionService.extract(document.getFilename());
-
+        String aiResponse = aiExtractionService.extract(document.getStoragePath());
+        System.out.println("aiResponse=" + aiResponse);
         ExtractionResult result = document.getExtractionResult();
         if (aiResponse != null && aiResponse.startsWith("{")) {
             result.setExtractedData(aiResponse);
