@@ -3,3 +3,13 @@
     2. Modifier la page dossiers pour afficher les dossiers dans un tableau, le nom des dossier sont cliquable
     3. Cliquer sur le nom d'un dossier va ouvrir une page qui affiche les détails d'un dossier, en bas de la page, un box pour sélectionner un ficher puis un bouton "Envoyer un document"
     4. Cliquer sur le bouton va envoyer le fichier choisi au backend pour analyser, puis afficher le résultat reçu
+
+
+Pour tester, dans le répertoire cardxLearned :
+- docker compose up
+
+Pour arrêter fontend,backend et db:
+- docker compose down
+
+Pour recompiler:
+- docker compose build --no-cache
