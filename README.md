@@ -13,3 +13,14 @@ Pour arrêter fontend,backend et db:
 
 Pour recompiler:
 - docker compose build --no-cache
+
+TODO:
+- SharpAPI retourne cette réponse après un envoi de fichier
+Object { status_url: "https://apyhub.com/services/provider/sharpapi/api/v1/hr/parse_resume/job/status/4e465d78-5ef9-444b-abe9-b2cedf0486c4", job_id: "4e465d78-5ef9-444b-abe9-b2cedf0486c4" }
+​- Il faut appeller <status_url> avec <job_id> pour interoger le statut de la tâche, l'analyse du document finit quand on a cette réponse
+{
+  "status": "completed",
+  "data": {...}
+}
+
+Les données dans le champs "data" sont à afficher dans l'écran (message)
