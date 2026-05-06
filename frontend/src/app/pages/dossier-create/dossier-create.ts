@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { DossierService } from '../../services/dossier.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dossier-create',
@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
   templateUrl: './dossier-create.html',
   styleUrl: './dossier-create.scss',
 })
-
 export class DossierCreateComponent {
   nom: string = '';
 
@@ -23,7 +22,8 @@ export class DossierCreateComponent {
     const dossier = {
       clientName: this.nom,
       email: '',
-      phone: ''
+      phone: '',
+      status: 'EN_ATTENTE'
     };
 
     this.dossierService.create(dossier).subscribe({
