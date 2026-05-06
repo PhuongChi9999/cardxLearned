@@ -1,5 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { DossierService } from '../../services/dossier.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -13,17 +13,17 @@ export class Dossiers implements OnInit {
 
   dossiers = signal<any[]>([]);
 
-  constructor(private http: HttpClient) {}
+  constructor(private dossierService: DossierService) {}
 
   ngOnInit(): void {
     this.loadDossiers();
   }
 
   loadDossiers(): void {
-    this.http.get<any[]>('http://localhost:8080/api/dossiers')
+    this.dossierService.getAll()
       .subscribe(data => {
-          console.log('Dossiers reçus:', data);
-          this.dossiers.set(data);
-        });
+        console.log('Dossiers reçus:', data);
+        this.dossiers.set(data);
+      });
   }
 }

@@ -15,8 +15,8 @@ export interface Dossier {
 })
 export class DossierService {
 
-  //private apiUrl = '/api/dossiers';
-  private apiUrl = 'http://localhost:8080/api/dossiers';
+  private apiUrl = '/api/dossiers';
+  //private apiUrl = 'http://localhost:8080/api/dossiers';
 
   constructor(private http: HttpClient) {}
 
@@ -26,5 +26,9 @@ export class DossierService {
 
   getAll(): Observable<Dossier[]> {
     return this.http.get<Dossier[]>(this.apiUrl);
+  }
+
+  getById(id: string | number): Observable<Dossier> {
+    return this.http.get<Dossier>(`${this.apiUrl}/${id}`);
   }
 }
