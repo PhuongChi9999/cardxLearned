@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 export interface ExtractionResult {
   id: number;
+  status?: string;
   extractedData: any;
 }
 
