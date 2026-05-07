@@ -2,12 +2,27 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface ExtractionResult {
+  id: number;
+  extractedData: any;
+}
+
+export interface DocumentItem {
+  id: number;
+  filename: string;
+  fileType: string;
+  uploadedAt: string;
+  extractionResult?: ExtractionResult;
+}
+
 export interface Dossier {
   id?: number;
   clientName: string;
   email?: string;
   phone?: string;
   status?: string;
+  createdAt?: string;
+  documents?: DocumentItem[];
 }
 
 @Injectable({
@@ -30,5 +45,14 @@ export class DossierService {
 
   getById(id: string | number): Observable<Dossier> {
     return this.http.get<Dossier>(`${this.apiUrl}/${id}`);
+  }
+
+  uploadDocument(dossierId: string | number, file: File): Observable<any> {
+    const formData = new FormData();
+
+    formData.append('file', file);
+    formData.append('dossierId', dossierId.toString());
+
+    return this.http.post('/api/documents/upload', formData);
   }
 }

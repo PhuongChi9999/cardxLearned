@@ -1,64 +1,85 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { JsonPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+
+import { Dossier, DossierService } from '../../services/dossier.service';
 
 @Component({
   selector: 'app-dossier-detail',
   standalone: true,
+  imports: [JsonPipe, DatePipe],
   templateUrl: './dossier-detail.html',
   styleUrl: './dossier-detail.scss',
 })
 export class DossierDetail {
-
   id: string | null = null;
-  dossier: any = null;
+
+  dossier = signal<Dossier | null>(null);
+  selectedFile: File | null = null;
+
+  message = signal('');
+  uploadResult = signal<any>(null);
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient
+    private dossierService: DossierService
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
 
-    this.loadDossier();
+    if (this.id) {
+      this.loadDossier(this.id);
+    }
   }
 
-  loadDossier() {
-    this.http.get(`/api/dossiers/${this.id}`)
-      .subscribe(data => {
+  loadDossier(id: string) {
+    this.dossierService.getById(id).subscribe({
+      next: (data) => {
         console.log('DETAIL:', data);
-        this.dossier = data;
-      });
+        this.dossier.set(data);
+      },
+      error: (err) => {
+        console.error('Erreur détail dossier:', err);
+        this.message.set('Erreur chargement dossier');
+      }
+    });
   }
 
-  selectedFile: File | null = null;
-  message: string = '';
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      this.message.set('');
+      this.uploadResult.set(null);
+    }
   }
 
   upload() {
-    if (!this.selectedFile) {
-      alert('Choisir un fichier');
+    if (!this.id) {
+      this.message.set('Erreur: dossier introuvable');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('file', this.selectedFile);
-    formData.append('dossierId', this.id!);
+    if (!this.selectedFile) {
+      this.message.set('Veuillez sélectionner un fichier');
+      return;
+    }
 
-    this.http.post('/api/documents/upload', formData)
-      .subscribe({
-        next: (doc: any) => {
-          console.log('Uploaded:', doc);
+    this.message.set('Envoi du document en cours...');
+    this.uploadResult.set(null);
 
-          // gọi extract
-          this.extract(doc.id);
-        },
-        error: () => {
-          alert('Erreur upload');
-        }
-      });
+    this.dossierService.uploadDocument(this.id, this.selectedFile).subscribe({
+      next: (response) => {
+        console.log('UPLOAD RESPONSE:', response);
+        this.uploadResult.set(response);
+        this.message.set('Document envoyé avec succès');
+        this.loadDossier(this.id!);
+      },
+      error: (err) => {
+        console.error('Erreur upload:', err);
+        this.message.set('Erreur lors de l’envoi du document');
+      }
+    });
   }
 
   extract(documentId: number) {
