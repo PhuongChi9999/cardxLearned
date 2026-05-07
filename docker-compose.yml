@@ -17,8 +17,12 @@ services:
       OPENAI_API_KEY: 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
       OPENAI_MODEL: gpt-5.4-mini
       SHARPAPI_API_KEY: APY0EC90rH2HzHBSSQT7Ep84pwNlT3luGltOrqWqhExR9FkAUIU6NhzVy7stFHMJkNh3lqLGwtUk
+      LOCALAI_BASE_URL: http://localai:8080/v1
+      LOCALAI_API_KEY: localai
+      LOCALAI_MODEL: glm-ocr
     depends_on:
       - db
+     # - localai
 
   db:
     image: postgres:16
@@ -31,5 +35,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+ # localai:
+ #   image: localai/localai:latest
+ #   ports:
+ #     - "8081:8080"
 volumes:
   postgres_data:

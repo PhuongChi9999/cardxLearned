@@ -4,16 +4,20 @@ import backend.entity.ClientDossier;
 import backend.entity.Document;
 import backend.entity.ExtractionResult;
 import backend.repository.ClientDossierRepository;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import java.util.List;
 import backend.repository.DocumentRepository;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class DocumentService {
@@ -26,6 +30,9 @@ public class DocumentService {
 
     private final AiExtractionService aiExtractionService;
 
+    @Value("${app.upload.dir}")
+    private String uploadDirProperty;
+
     public DocumentService(ClientDossierRepository dossierRepository,
                            DocumentRepository documentRepository,
                            AiExtractionService aiExtractionService) {
@@ -34,16 +41,24 @@ public class DocumentService {
         this.aiExtractionService = aiExtractionService;
     }
 
+    @PostConstruct
+    public void init() {
+        try {
+            Path uploadDir = Paths.get(uploadDirProperty);
+            Files.createDirectories(uploadDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Document uploadDocument(MultipartFile file, Long dossierId) {
         ClientDossier dossier = dossierRepository.findById(dossierId)
                 .orElseThrow(() -> new RuntimeException("Dossier not found"));
 
         try {
-            Files.createDirectories(Path.of(UPLOAD_DIR));
-
             String originalFilename = file.getOriginalFilename();
             String safeFilename = System.currentTimeMillis() + "_" + originalFilename;
-            Path storagePath = Path.of(UPLOAD_DIR, safeFilename);
+            Path storagePath = Path.of(uploadDirProperty, safeFilename);
 
             Files.copy(file.getInputStream(), storagePath, StandardCopyOption.REPLACE_EXISTING);
 
@@ -89,9 +104,15 @@ public class DocumentService {
 
         String aiResponse = aiExtractionService.extract(document.getStoragePath());
         System.out.println("aiResponse=" + aiResponse);
+
         ExtractionResult result = document.getExtractionResult();
-        if (aiResponse != null && aiResponse.startsWith("{")) {
-            result.setExtractedData(aiResponse);
+
+        String cleaned = aiResponse.replace("```json", "").replace("```", "").trim();
+
+        System.out.println("cleaned=" + cleaned);
+
+        if (cleaned.startsWith("{")) {
+            result.setExtractedData(cleaned);
         } else {
             result.setExtractedData("{\"status\":\"INVALID_AI_RESPONSE\"}");
         }

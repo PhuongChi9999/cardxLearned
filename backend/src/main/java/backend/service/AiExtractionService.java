@@ -5,14 +5,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class AiExtractionService {
 
-    private final SharpAiClientService sharpAiClientService;
+    //private final OpenAiClientService openAiClientService;
+    private final LocalAiClientService openAiClientService;
 
+   /* public AiExtractionService(OpenAiClientService openAiClientService) {
+        this.openAiClientService = openAiClientService;
+    }*/
 
-    public AiExtractionService(SharpAiClientService sharpAiClientService) {
-        this.sharpAiClientService = sharpAiClientService;
+   public AiExtractionService(LocalAiClientService openAiClientService) {
+        this.openAiClientService = openAiClientService;
     }
 
     public String extract(String filename) {
-        return sharpAiClientService.extractClientData(filename);
+        return openAiClientService.extractClientData(filename);
     }
 }

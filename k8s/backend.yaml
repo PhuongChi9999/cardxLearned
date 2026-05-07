@@ -14,10 +14,13 @@ spec:
     spec:
       containers:
         - name: backend
-          image: phuongchiphysics/backend-java:1.0.1
+          image: hiennvan/backend-java:1.0.1
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: uploads
+              mountPath: /app/uploads
           env:
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres:5432/cardx_db
@@ -27,6 +30,19 @@ spec:
               value: postgres
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
+            - name: LOCALAI_BASE_URL
+              value: http://localai:8080/v1
+            - name: LOCALAI_API_KEY
+              value: localai
+            - name: LOCALAI_MODEL
+              value: glm-ocr
+            - name: OPENAI_API_KEY
+              value: openai
+            - name: OPENAI_MODEL
+              value: gpt-5.4-mini
+      volumes:
+        - name: uploads
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

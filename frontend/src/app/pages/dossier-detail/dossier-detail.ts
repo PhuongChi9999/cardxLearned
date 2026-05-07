@@ -23,7 +23,7 @@ export class DossierDetail {
   }
 
   loadDossier() {
-    this.http.get(`http://localhost:8080/api/dossiers/${this.id}`)
+    this.http.get(`/api/dossiers/${this.id}`)
       .subscribe(data => {
         console.log('DETAIL:', data);
         this.dossier = data;
@@ -47,7 +47,7 @@ export class DossierDetail {
     formData.append('file', this.selectedFile);
     formData.append('dossierId', this.id!);
 
-    this.http.post('http://localhost:8080/api/documents/upload', formData)
+    this.http.post('/api/documents/upload', formData)
       .subscribe({
         next: (doc: any) => {
           console.log('Uploaded:', doc);
@@ -64,7 +64,7 @@ export class DossierDetail {
   extract(documentId: number) {
     this.message = 'Analyse en cours...';
 
-    this.http.post(`http://localhost:8080/api/documents/${documentId}/extract`, {})
+    this.http.post(`/api/documents/${documentId}/extract`, {})
       .subscribe({
         next: () => {
           this.getResult(documentId);
@@ -77,7 +77,7 @@ export class DossierDetail {
   }
 
   getResult(documentId: number) {
-    this.http.get(`http://localhost:8080/api/documents/${documentId}/result`)
+    this.http.get(`/api/documents/${documentId}/result`)
       .subscribe({
         next: (res: any) => {
           console.log('RESULT:', res);

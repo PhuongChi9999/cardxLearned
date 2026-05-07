@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: your-dockerhub/frontend:1.0.0
+          image: hiennvan/frontend:1.0.1
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
 ---
