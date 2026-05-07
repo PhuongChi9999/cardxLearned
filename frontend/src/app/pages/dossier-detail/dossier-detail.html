@@ -8,6 +8,46 @@
   <p><strong>Téléphone:</strong> {{ d.phone }}</p>
   <p><strong>Status:</strong> {{ d.status }}</p>
 </div>
+
+<h3>Documents du dossier</h3>
+
+@if (d.documents && d.documents.length > 0) {
+<table style="width:100%; border-collapse:collapse; margin-top:15px;">
+  <thead>
+  <tr style="background:#eef2f7;">
+    <th style="text-align:left; padding:10px; border:1px solid #ddd;">Fichier</th>
+    <th style="text-align:left; padding:10px; border:1px solid #ddd;">Type</th>
+    <th style="text-align:left; padding:10px; border:1px solid #ddd;">Date upload</th>
+    <th style="text-align:left; padding:10px; border:1px solid #ddd;">Statut extraction</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  @for (doc of d.documents; track doc.id) {
+  <tr>
+    <td style="padding:10px; border:1px solid #ddd;">
+      {{ doc.filename }}
+    </td>
+
+    <td style="padding:10px; border:1px solid #ddd;">
+      {{ doc.fileType }}
+    </td>
+
+    <td style="padding:10px; border:1px solid #ddd;">
+      {{ doc.uploadedAt | date:'dd/MM/yyyy HH:mm' }}
+    </td>
+
+    <td style="padding:10px; border:1px solid #ddd;">
+      {{ doc.extractionResult?.extractedData?.status || 'Aucun résultat' }}
+    </td>
+  </tr>
+  }
+  </tbody>
+</table>
+} @else {
+<p>Aucun document envoyé pour ce dossier.</p>
+}
+
 } @else {
 <p>Loading...</p>
 }
@@ -26,4 +66,12 @@
 
 @if (message()) {
 <p>{{ message() }}</p>
+}
+
+@if (uploadResult()) {
+<h3>Résultat reçu</h3>
+
+<pre style="background:#f4f4f4; padding:15px; border-radius:6px; white-space:pre-wrap;">
+{{ uploadResult() | json }}
+  </pre>
 }

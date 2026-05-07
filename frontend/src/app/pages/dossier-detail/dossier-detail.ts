@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { JsonPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
 import { Dossier, DossierService } from '../../services/dossier.service';
@@ -6,6 +7,7 @@ import { Dossier, DossierService } from '../../services/dossier.service';
 @Component({
   selector: 'app-dossier-detail',
   standalone: true,
+  imports: [JsonPipe, DatePipe],
   templateUrl: './dossier-detail.html',
   styleUrl: './dossier-detail.scss',
 })
@@ -14,7 +16,9 @@ export class DossierDetail {
 
   dossier = signal<Dossier | null>(null);
   selectedFile: File | null = null;
+
   message = signal('');
+  uploadResult = signal<any>(null);
 
   constructor(
     private route: ActivatedRoute,
@@ -45,10 +49,36 @@ export class DossierDetail {
 
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
+      this.message.set('');
+      this.uploadResult.set(null);
     }
   }
 
   upload() {
-    this.message.set('Upload document sera traité dans l’étape suivante');
+    if (!this.id) {
+      this.message.set('Erreur: dossier introuvable');
+      return;
+    }
+
+    if (!this.selectedFile) {
+      this.message.set('Veuillez sélectionner un fichier');
+      return;
+    }
+
+    this.message.set('Envoi du document en cours...');
+    this.uploadResult.set(null);
+
+    this.dossierService.uploadDocument(this.id, this.selectedFile).subscribe({
+      next: (response) => {
+        console.log('UPLOAD RESPONSE:', response);
+        this.uploadResult.set(response);
+        this.message.set('Document envoyé avec succès');
+        this.loadDossier(this.id!);
+      },
+      error: (err) => {
+        console.error('Erreur upload:', err);
+        this.message.set('Erreur lors de l’envoi du document');
+      }
+    });
   }
 }

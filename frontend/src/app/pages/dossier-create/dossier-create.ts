@@ -12,6 +12,8 @@ import { DossierService } from '../../services/dossier.service';
 })
 export class DossierCreateComponent {
   nom: string = '';
+  email: string = '';
+  phone: string = '';
 
   constructor(
     private dossierService: DossierService,
@@ -21,9 +23,8 @@ export class DossierCreateComponent {
   create() {
     const dossier = {
       clientName: this.nom,
-      email: '',
-      phone: '',
-      status: 'EN_ATTENTE'
+      email: this.email,
+      phone: this.phone
     };
 
     this.dossierService.create(dossier).subscribe({
