@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+
+import { Dossier, DossierService } from '../../services/dossier.service';
 
 @Component({
   selector: 'app-dossier-detail',
@@ -9,85 +10,45 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './dossier-detail.scss',
 })
 export class DossierDetail {
-
   id: string | null = null;
-  dossier: any = null;
+
+  dossier = signal<Dossier | null>(null);
+  selectedFile: File | null = null;
+  message = signal('');
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient
+    private dossierService: DossierService
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
 
-    this.loadDossier();
+    if (this.id) {
+      this.loadDossier(this.id);
+    }
   }
 
-  loadDossier() {
-    this.http.get(`http://localhost:8080/api/dossiers/${this.id}`)
-      .subscribe(data => {
+  loadDossier(id: string) {
+    this.dossierService.getById(id).subscribe({
+      next: (data) => {
         console.log('DETAIL:', data);
-        this.dossier = data;
-      });
+        this.dossier.set(data);
+      },
+      error: (err) => {
+        console.error('Erreur détail dossier:', err);
+        this.message.set('Erreur chargement dossier');
+      }
+    });
   }
 
-  selectedFile: File | null = null;
-  message: string = '';
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
   }
 
   upload() {
-    if (!this.selectedFile) {
-      alert('Choisir un fichier');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', this.selectedFile);
-    formData.append('dossierId', this.id!);
-
-    this.http.post('http://localhost:8080/api/documents/upload', formData)
-      .subscribe({
-        next: (doc: any) => {
-          console.log('Uploaded:', doc);
-
-          // gọi extract
-          this.extract(doc.id);
-        },
-        error: () => {
-          alert('Erreur upload');
-        }
-      });
+    this.message.set('Upload document sera traité dans l’étape suivante');
   }
-
-  extract(documentId: number) {
-    this.message = 'Analyse en cours...';
-
-    this.http.post(`http://localhost:8080/api/documents/${documentId}/extract`, {})
-      .subscribe({
-        next: () => {
-          this.getResult(documentId);
-        },
-        error: (err) => {
-          console.error('Erreur analyse:', err);
-          alert('Erreur analyse');
-        }
-      });
-  }
-
-  getResult(documentId: number) {
-    this.http.get(`http://localhost:8080/api/documents/${documentId}/result`)
-      .subscribe({
-        next: (res: any) => {
-          console.log('RESULT:', res);
-          this.message = JSON.stringify(res, null, 2);
-        },
-        error: (err) => {
-          console.error('Erreur résultat:', err);
-          alert('Erreur récupération résultat');
-        }
-      });
-  }
-
 }

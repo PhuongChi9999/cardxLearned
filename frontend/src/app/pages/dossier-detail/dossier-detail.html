@@ -1,18 +1,18 @@
 <h2>Dossier detail</h2>
 
-@if (!dossier) {
+@if (dossier(); as d) {
+<div style="margin-top:20px;">
+  <p><strong>ID:</strong> {{ d.id }}</p>
+  <p><strong>Client:</strong> {{ d.clientName }}</p>
+  <p><strong>Email:</strong> {{ d.email }}</p>
+  <p><strong>Téléphone:</strong> {{ d.phone }}</p>
+  <p><strong>Status:</strong> {{ d.status }}</p>
+</div>
+} @else {
 <p>Loading...</p>
 }
 
-@if (dossier) {
-<p><b>ID:</b> {{ dossier.id }}</p>
-<p><b>Nom:</b> {{ dossier.clientName }}</p>
-<p><b>Email:</b> {{ dossier.email }}</p>
-<p><b>Téléphone:</b> {{ dossier.phone }}</p>
-<p><b>Status:</b> {{ dossier.status }}</p>
-}
-
-<hr>
+<hr style="margin:30px 0;">
 
 <h3>Envoyer un document</h3>
 
@@ -20,8 +20,10 @@
 
 <br><br>
 
-<button (click)="upload()">Envoyer un document</button>
+<button (click)="upload()">
+  Envoyer un document
+</button>
 
-@if (message) {
-<p>{{ message }}</p>
+@if (message()) {
+<p>{{ message() }}</p>
 }
