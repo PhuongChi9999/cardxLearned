@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { JsonPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import { Dossier, DossierService } from '../../services/dossier.service';
 
@@ -22,7 +23,8 @@ export class DossierDetail {
 
   constructor(
     private route: ActivatedRoute,
-    private dossierService: DossierService
+    private dossierService: DossierService,
+    private http: HttpClient
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
 
@@ -83,7 +85,7 @@ export class DossierDetail {
   }
 
   extract(documentId: number) {
-    this.message = 'Analyse en cours...';
+    this.message.set('Analyse en cours...');
 
     this.http.post(`/api/documents/${documentId}/extract`, {})
       .subscribe({
@@ -102,7 +104,7 @@ export class DossierDetail {
       .subscribe({
         next: (res: any) => {
           console.log('RESULT:', res);
-          this.message = JSON.stringify(res, null, 2);
+           this.message.set(JSON.stringify(res, null, 2));
         },
         error: (err) => {
           console.error('Erreur résultat:', err);

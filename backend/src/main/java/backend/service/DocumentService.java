@@ -22,8 +22,6 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class DocumentService {
 
-    private static final String UPLOAD_DIR = "uploads";
-
     private final ClientDossierRepository dossierRepository;
 
     private final DocumentRepository documentRepository;
