@@ -11,6 +11,9 @@ public class ExtractionResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    private ExtractionStatus status;
+
     @Column(columnDefinition = "TEXT")
     private String extractedData;
 
@@ -22,12 +25,21 @@ public class ExtractionResult {
     protected ExtractionResult() {}
 
     public ExtractionResult(String extractedData, Document document) {
+        this.status = ExtractionStatus.PENDING;
         this.extractedData = extractedData;
         this.document = document;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public ExtractionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ExtractionStatus status) {
+        this.status = status;
     }
 
     public String getExtractedData() {

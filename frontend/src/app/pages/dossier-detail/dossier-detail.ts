@@ -113,4 +113,23 @@ export class DossierDetail {
       });
   }
 
+  getExtractionLabel(status?: string): string {
+    switch (status) {
+      case 'PENDING':
+        return 'En attente';
+
+      case 'PROCESSING':
+        return 'Traitement en cours';
+
+      case 'COMPLETED':
+        return 'Terminé';
+
+      case 'FAILED':
+        return 'Erreur';
+
+      default:
+        return 'Ancien document';
+    }
+  }
+
 }
