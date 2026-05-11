@@ -10,8 +10,7 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.chat.completions.ChatCompletion;
 import com.openai.models.chat.completions.ChatCompletionCreateParams;
-import com.openai.models.responses.Response;
-import com.openai.models.responses.ResponseCreateParams;
+
 
 @Service
 public class LocalAiClientService {
@@ -36,7 +35,6 @@ public class LocalAiClientService {
         //return "{\"clientName\":\"Mock User\",\"email\":null,\"phone\":null,\"amount\":1000,\"status\":\"MOCK_AI_FALLBACK\"}";
     //}
 
-
     public String extractClientData(String filename) {
 
         try {
@@ -44,18 +42,21 @@ public class LocalAiClientService {
             String fileText = tika.parseToString(new File(filename));
 
             String prompt = """
-                Analyse ce document et retourne uniquement un JSON valide avec:
-                clientName, status.
-                Ne mets pas ```json.
-
+                Extract clientName from this document text.
+                Return only valid JSON:
+                {"clientName": string or null, "status": "EXTRACTED" or "NOT_FOUND"}
+                
                 DOCUMENT:
                 """ + fileText;
 
             ChatCompletionCreateParams params =
-                                            ChatCompletionCreateParams.builder()
-                                                .model(this.model)
-                                                .addUserMessage(prompt)
-                                                .build();
+                    ChatCompletionCreateParams.builder()
+                            .model(this.model)
+                            .addSystemMessage("You are a JSON extraction engine. Always answer with valid JSON only.")
+                            .addUserMessage(prompt)
+                            .maxTokens(150)
+                            .temperature(0.1)
+                            .build();
 
             ChatCompletion completion = restClient.chat().completions().create(params);
 
@@ -70,7 +71,7 @@ public class LocalAiClientService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "{\"status\":\"LOCALAI_CALL_FAILED\"}";
+            return "{\"clientName\":null,\"status\":\"LOCALAI_CALL_FAILED\",\"message\":\"LocalAI is not ready or no chat model is available\"}";
         }
     }
 

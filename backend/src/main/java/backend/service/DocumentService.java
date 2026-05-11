@@ -3,6 +3,7 @@ package backend.service;
 import backend.entity.ClientDossier;
 import backend.entity.Document;
 import backend.entity.ExtractionResult;
+import backend.entity.ExtractionStatus;
 import backend.repository.ClientDossierRepository;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -78,8 +79,10 @@ public class DocumentService {
 
             ClientDossier savedDossier = dossierRepository.save(dossier);
 
-            return savedDossier.getDocuments()
+            Document savedDocument = savedDossier.getDocuments()
                     .get(savedDossier.getDocuments().size() - 1);
+
+            return extractData(savedDocument.getId());
 
         } catch (IOException e) {
             throw new RuntimeException("Could not store uploaded file", e);
@@ -111,8 +114,15 @@ public class DocumentService {
 
         if (cleaned.startsWith("{")) {
             result.setExtractedData(cleaned);
+
+            if (cleaned.contains("LOCALAI_CALL_FAILED") || cleaned.contains("INVALID_AI_RESPONSE")) {
+                result.setStatus(ExtractionStatus.FAILED);
+            } else {
+                result.setStatus(ExtractionStatus.COMPLETED);
+            }
         } else {
             result.setExtractedData("{\"status\":\"INVALID_AI_RESPONSE\"}");
+            result.setStatus(ExtractionStatus.FAILED);
         }
 
         documentRepository.save(document);
