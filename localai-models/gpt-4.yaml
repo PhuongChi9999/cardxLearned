@@ -1,0 +1,9 @@
+name: gpt-4
+backend: llama-cpp
+
+parameters:
+  model: tinyllama.gguf
+  temperature: 0.1
+
+context_size: 512
+threads: 2
