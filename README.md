@@ -26,3 +26,19 @@ Object { status_url: "https://apyhub.com/services/provider/sharpapi/api/v1/hr/pa
 Les données dans le champs "data" sont à afficher dans l'écran (message)
 - Documentation
 https://apyhub.com/utility/sharpapi-ai-resume-parser
+
+KUBERNETES
+
+Pour déployer kubernetes, il y a 2 choix
+1. minikube start/stop
+2. activer Kubernetes dans Docker Desktop
+
+Déployer l'application, aller dans le répertoire k8s
+- kubectl apply -f db.yaml
+- kubectl apply -f backend.yaml
+- kubectl apply -f frontend.yaml
+
+Supprimer l'application, aller dans le répertoire k8s
+- kubectl delete -f db.yaml
+- kubectl delete -f backend.yaml
+- kubectl delete -f frontend.yaml
