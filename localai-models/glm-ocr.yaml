@@ -1,0 +1,9 @@
+name: glm-ocr
+backend: llama-cpp
+
+parameters:
+  model: GLM-OCR-Q8_0.gguf
+  mmproj: mmproj-GLM-OCR-Q8_0.gguf
+
+context_size: 2048
+threads: 2

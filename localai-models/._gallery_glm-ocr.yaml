@@ -1,0 +1,17 @@
+description: |
+  GLM-OCR is a vision-language model specialized for optical character recognition and document understanding, built on the GLM architecture. This GGUF build runs on llama.cpp with the bundled mmproj.
+icon: https://huggingface.co/zai-org.png
+license: mit
+urls:
+- https://huggingface.co/zai-org/GLM-4.1V-9B-Thinking
+- https://huggingface.co/ggml-org/GLM-OCR-GGUF
+name: virtual
+config_file: ""
+files:
+- filename: GLM-OCR-Q8_0.gguf
+  sha256: 45bc244a6446aff850521dc41f18bc8d7105ad5f0c2c8c28af04e7cc4f4d50b1
+  uri: huggingface://ggml-org/GLM-OCR-GGUF/GLM-OCR-Q8_0.gguf
+- filename: mmproj-GLM-OCR-Q8_0.gguf
+  sha256: 9c4b58e33e316ed142eb5dcb41abec3844d3e6e5dc361ffb782c3fa9d175141f
+  uri: huggingface://ggml-org/GLM-OCR-GGUF/mmproj-GLM-OCR-Q8_0.gguf
+prompt_templates: []

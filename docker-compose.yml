@@ -36,7 +36,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   localai:
-    image: localai/localai:latest-cpu
+    image: localai/localai:latest
     ports:
       - "8081:8080"
     volumes:
