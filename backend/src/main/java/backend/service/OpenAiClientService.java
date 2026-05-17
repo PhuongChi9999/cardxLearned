@@ -7,7 +7,7 @@ import org.springframework.web.client.RestClient;
 import java.util.List;
 import java.util.Map;
 
-@Service
+//@Service
 public class OpenAiClientService {
 
     private final RestClient restClient;

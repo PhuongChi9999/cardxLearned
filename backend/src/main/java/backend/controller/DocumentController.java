@@ -12,7 +12,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/documents")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost"})
+//@CrossOrigin(origins = {"http://localhost:4200", "http://localhost"})
+@CrossOrigin(origins = {
+        "http://localhost:4200",
+        "http://localhost",
+        "http://127.0.0.1"
+})
 public class DocumentController {
 
     private final DocumentService documentService;
@@ -55,5 +60,12 @@ public class DocumentController {
     @GetMapping("/{id}/result")
     public ResponseEntity<ExtractionResultDto> getExtractionResult(@PathVariable Long id) {
         return ResponseEntity.ok(new ExtractionResultDto(documentService.getExtractionResult(id)));
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
+
+        documentService.deleteDocument(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

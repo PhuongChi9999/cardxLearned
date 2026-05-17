@@ -28,7 +28,7 @@ public class Document {
     @JsonBackReference
     private ClientDossier dossier;
 
-    @OneToOne(mappedBy = "document", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
     private ExtractionResult extractionResult;
 
     protected Document() {}

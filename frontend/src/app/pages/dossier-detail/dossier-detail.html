@@ -16,21 +16,40 @@
   <thead>
   <tr style="background:#eef2f7;">
     <th style="text-align:left; padding:10px; border:1px solid #ddd;">Fichier</th>
-    <th style="text-align:left; padding:10px; border:1px solid #ddd;">Type</th>
+
+    <th style="text-align:left; padding:10px; border:1px solid #ddd;">
+      Type IA
+    </th>
+
     <th style="text-align:left; padding:10px; border:1px solid #ddd;">Date upload</th>
+
     <th style="text-align:left; padding:10px; border:1px solid #ddd;">Statut extraction</th>
+
+    <th style="text-align:left; padding:10px; border:1px solid #ddd;">Action</th>
   </tr>
   </thead>
 
   <tbody>
   @for (doc of d.documents; track doc.id) {
   <tr>
-    <td style="padding:10px; border:1px solid #ddd;">
+    <td
+      style="
+        padding:10px;
+        border:1px solid #ddd;
+        max-width:260px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+      "
+          [title]="doc.filename"
+    >
       {{ doc.filename }}
     </td>
 
     <td style="padding:10px; border:1px solid #ddd;">
-      {{ doc.fileType }}
+      <span class="doc-type-badge">
+        {{ doc.extractionResult?.extractedData?.documentType || '—' }}
+      </span>
     </td>
 
     <td style="padding:10px; border:1px solid #ddd;">
@@ -38,7 +57,33 @@
     </td>
 
     <td style="padding:10px; border:1px solid #ddd;">
-      {{ getExtractionLabel(doc.extractionResult?.status) }}
+      <span [class]="getStatusClass(doc.extractionResult?.status)">
+        {{ getExtractionLabel(doc.extractionResult?.status) }}
+      </span>
+
+      @if (isProcessing(doc.extractionResult?.status)) {
+      <span class="spinner"></span>
+      }
+    </td>
+
+    <td style="padding:10px; border:1px solid #ddd; white-space:nowrap;">
+
+      <button
+        type="button"
+        class="action-btn"
+        (click)="selectDocument(doc)"
+      >
+        Voir
+      </button>
+
+      <button
+        type="button"
+        class="action-btn danger"
+        (click)="deleteDocument(doc.id)"
+      >
+        Supprimer
+      </button>
+
     </td>
   </tr>
   }
@@ -56,7 +101,15 @@
 
 <h3>Envoyer un document</h3>
 
-<input type="file" (change)="onFileSelected($event)" />
+<input
+  type="file"
+  accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+  (change)="onFileSelected($event)"
+/>
+
+<p class="upload-help">
+  Formats acceptés : PDF, JPG, PNG — taille maximale 10 MB.
+</p>
 
 <br><br>
 
@@ -68,10 +121,49 @@
 <p>{{ message() }}</p>
 }
 
-@if (uploadResult()) {
+@if (displayedDocument(); as doc) {
 <h3>Résultat reçu</h3>
 
-<pre style="background:#f4f4f4; padding:15px; border-radius:6px; white-space:pre-wrap;">
-{{ uploadResult() | json }}
-  </pre>
+<div class="result-card">
+  <p><strong>Document :</strong> {{ doc.filename }}</p>
+  <p><strong>Statut :</strong> {{ getExtractionLabel(doc.extractionResult?.status) }}</p>
+
+  @if (doc.extractionResult?.extractedData?.clientName) {
+  <p><strong>Client extrait :</strong> {{ doc.extractionResult?.extractedData?.clientName }}</p>
+  }
+
+  @if (doc.extractionResult?.extractedData?.email) {
+  <p><strong>Email extrait :</strong> {{ doc.extractionResult?.extractedData?.email }}</p>
+  }
+
+  @if (doc.extractionResult?.extractedData?.phone) {
+  <p><strong>Téléphone extrait :</strong> {{ doc.extractionResult?.extractedData?.phone }}</p>
+  }
+
+  @if (doc.extractionResult?.extractedData?.documentType) {
+  <p><strong>Type document :</strong> {{ doc.extractionResult?.extractedData?.documentType }}</p>
+  }
+
+  @if (doc.extractionResult?.extractedData?.claimType) {
+  <p><strong>Type sinistre :</strong> {{ doc.extractionResult?.extractedData?.claimType }}</p>
+  }
+
+  @if (doc.extractionResult?.extractedData?.contractNumber) {
+  <p><strong>Numéro contrat :</strong> {{ doc.extractionResult?.extractedData?.contractNumber }}</p>
+  }
+
+  @if (doc.extractionResult?.extractedData?.incidentDate) {
+  <p><strong>Date incident :</strong> {{ doc.extractionResult?.extractedData?.incidentDate }}</p>
+  }
+
+  @if (doc.extractionResult?.extractedData?.address) {
+  <p><strong>Adresse :</strong> {{ doc.extractionResult?.extractedData?.address }}</p>
+  }
+
+  @if (doc.extractionResult?.status === 'FAILED') {
+  <p class="error-message">
+    Extraction échouée. Veuillez réessayer plus tard ou vérifier le document.
+  </p>
+  }
+</div>
 }

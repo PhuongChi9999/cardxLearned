@@ -2,37 +2,36 @@ package backend.dto;
 
 import backend.entity.ExtractionResult;
 import backend.entity.ExtractionStatus;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.Map;
 
 public class ExtractionResultDto {
 
     private Long id;
-
     private ExtractionStatus status;
-
     private Object extractedData;
 
     public ExtractionResultDto(ExtractionResult entity) {
-
         this.id = entity.getId();
-
         this.status = entity.getStatus();
 
         try {
-
             ObjectMapper mapper = new ObjectMapper();
 
-            this.extractedData = mapper.readValue(
-                    entity.getExtractedData(),
-                    Object.class
-            );
+            String data = entity.getExtractedData();
+
+            if (data == null || data.isBlank()) {
+                this.extractedData = Map.of();
+            } else {
+                this.extractedData = mapper.readValue(data, Object.class);
+            }
 
         } catch (Exception e) {
-
             e.printStackTrace();
-
-            this.extractedData = null;
+            this.extractedData = Map.of(
+                    "status", "INVALID_STORED_EXTRACTION_DATA"
+            );
         }
     }
 

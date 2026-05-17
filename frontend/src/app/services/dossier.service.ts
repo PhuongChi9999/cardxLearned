@@ -56,4 +56,7 @@ export class DossierService {
 
     return this.http.post('/api/documents/upload', formData);
   }
+  deleteDocument(id: number): Observable<void> {
+    return this.http.delete<void>(`/api/documents/${id}`);
+  }
 }

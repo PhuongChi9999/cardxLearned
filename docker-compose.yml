@@ -10,22 +10,19 @@ services:
     build: ./backend
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydb
-      SPRING_DATASOURCE_USERNAME: myuser
-      SPRING_DATASOURCE_PASSWORD: Talachi99
-      OPENAI_API_KEY: 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
-      OPENAI_MODEL: gpt-5.4-mini
-      SHARPAPI_API_KEY: APY0EC90rH2HzHBSSQT7Ep84pwNlT3luGltOrqWqhExR9FkAUIU6NhzVy7stFHMJkNh3lqLGwtUk
+    env_file:
+      - .env
     depends_on:
       - db
+    volumes:
+      - backend_uploads:/app/uploads
 
   db:
     image: postgres:16
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: Talachi99
-      POSTGRES_DB: mydb
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -33,3 +30,4 @@ services:
 
 volumes:
   postgres_data:
+  backend_uploads:
