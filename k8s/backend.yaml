@@ -27,6 +27,11 @@ spec:
               value: postgres
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
+            - name: GEMINI_API_KEY
+              value: AIzaSyBxniYWkNTapaUmB0gHrlnPBpw1jW5O8LA
+            - name: AI_PROVIDER
+              value: gemini
+
 ---
 apiVersion: v1
 kind: Service
